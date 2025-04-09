@@ -19,6 +19,8 @@ gem "bcrypt", "~> 3.1.7"
 gem 'olive_branch'
 gem 'jwt'
 gem 'dotenv-rails', groups: [:development, :test]
+gem 'rack-cors'
+gem "pry-rails"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]

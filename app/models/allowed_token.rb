@@ -1,0 +1,2 @@
+class AllowedToken < ApplicationRecord
+end
