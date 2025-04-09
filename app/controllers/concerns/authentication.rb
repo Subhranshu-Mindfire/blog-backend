@@ -4,17 +4,16 @@ module Authentication
     salt = SecureRandom.hex(10)
     token = JsonWebToken.encode({ salt: salt })
 
-    AllowedToken.create!(
+    AllowedList.create!(
       token: token,
       salt: salt,
       expires_at: 24.hours.from_now
     )
-
-    { token: token, salt: salt }
+    return token
   end
 
   def invalidate_token(token)
-    allowed_token = AllowedToken.find_by(token: token)
+    allowed_token = AllowedList.find_by(token: token)
   
     if allowed_token
       allowed_token.destroy
@@ -24,7 +23,7 @@ module Authentication
     end
   end
 
-  def extract_token_from_header(header)
-    header.to_s.split(' ').last
+  def extract_token_from_header()
+    request.headers['Authorization'].to_s.split(' ').last
   end
 end
