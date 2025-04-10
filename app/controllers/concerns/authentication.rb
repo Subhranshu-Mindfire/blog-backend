@@ -28,9 +28,9 @@ module Authentication
     request.headers['Authorization'].to_s.split(' ').last
   end
 
-  def current_user
+  def set_current_user
     token = extract_token_from_header
-    payload = JsonWebToken.decode(token) rescue nil
+    payload = JsonWebToken.decode(token)
 
     if payload.present?
       salt = payload['salt']
@@ -45,12 +45,12 @@ module Authentication
     end
   end
 
-  def is_authenticated?
-    if current_user
-      return true
-    else
-      return false
-    end
+  def authenticated?
+    current_user.present?
+  end
+
+  def current_user
+    @current ||= set_current_user
   end
   
 end
