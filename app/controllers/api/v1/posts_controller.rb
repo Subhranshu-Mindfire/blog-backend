@@ -4,7 +4,7 @@ module Api
       def index
         render json:{
           posts: Post.all
-        }, include: :user
+        }, include: :user, include: :likes
       end
 
       def create
