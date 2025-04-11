@@ -3,30 +3,15 @@ module Api
     class PostsController < Api::V1::ApplicationController
       
       def index
-        posts = Post.includes(:user, :likes).order(created_at: :desc)
-        render json: posts.map { |post|
-        post.as_json(
-          only: [:id, :title, :description, :created_at, :no_of_likes],
-        ).merge(
-          truncated_description: post.truncate_post,
-          user: {
-            id: post.user.id,
-            name: post.user.name
-          },
-          liked_by_user: current_user.present? && post.likes.exists?(user_id: current_user.id)
-        )
-      }
+        posts = Post.includes(:user).order(created_at: :desc)
+        render json: posts, current_user: current_user
       end
 
       def show
         post = Post.find(params[:id])
-        render json:post.as_json(
-          only: [:id, :title, :description, :created_at, :no_of_likes],
-        ).merge(liked_by_user: current_user.present? && post.likes.exists?(user_id: current_user.id),user: {
-          id: post.user.id,
-          name: post.user.name
-        })
+        render json: post, current_user: current_user
       end
+      
 
       def create
         return render json: { error: 'Unauthorized' }, status: :unauthorized unless authenticated?

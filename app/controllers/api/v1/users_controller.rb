@@ -1,14 +1,6 @@
 module Api
   module V1
     class UsersController < Api::V1::ApplicationController
-
-      def index
-        @users = User.all
-        render json:{
-          users_table: @users
-        }
-      end
-
       def create
         @user = User.new(user_params)
         if @user.save
