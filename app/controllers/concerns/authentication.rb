@@ -22,17 +22,20 @@ module Authentication
   end
 
   def extract_token_from_header
-    request.headers['Authorization'].to_s.split(' ').last
+    token = request.headers['Authorization'].to_s.split(' ').last
+    raise TokenNotFound, 'Authorization token not provided' if token.blank?
+
+    token
   end
 
   def set_current_user
     token = extract_token_from_header
     payload = JsonWebToken.decode(token)
-    return nil unless payload
+    raise TokenNotFound, 'Invalid or expired token' unless payload
 
     salt = payload['salt']
     allowed = AllowedList.find_by(token: token, salt: salt)
-    return nil unless allowed
+    raise TokenNotFound, 'Token not in allowed list' unless allowed
 
     allowed.user
   end
