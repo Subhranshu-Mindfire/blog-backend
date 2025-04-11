@@ -1,4 +1,3 @@
-
 module Authentication
   def generate_token(user)
     salt = SecureRandom.hex(10)
@@ -10,39 +9,32 @@ module Authentication
       expires_at: 24.hours.from_now,
       user: user
     )
+
     return token
   end
 
   def invalidate_token(token)
     allowed_token = AllowedList.find_by(token: token)
-  
-    if allowed_token
-      allowed_token.destroy
-      return true
-    else
-      return false unless allowed_token
-    end
+    return false unless allowed_token
+
+    allowed_token.destroy
+    true
   end
 
-  def extract_token_from_header()
+  def extract_token_from_header
     request.headers['Authorization'].to_s.split(' ').last
   end
 
   def set_current_user
     token = extract_token_from_header
     payload = JsonWebToken.decode(token)
+    return nil unless payload
 
-    if payload.present?
-      salt = payload['salt']
-      allowed = AllowedList.find_by(token: token, salt: salt)
-      if allowed
-        return allowed.user
-      else
-        return nil
-      end
-    else
-      return nil
-    end
+    salt = payload['salt']
+    allowed = AllowedList.find_by(token: token, salt: salt)
+    return nil unless allowed
+
+    allowed.user
   end
 
   def authenticated?
@@ -52,5 +44,4 @@ module Authentication
   def current_user
     @current ||= set_current_user
   end
-  
 end

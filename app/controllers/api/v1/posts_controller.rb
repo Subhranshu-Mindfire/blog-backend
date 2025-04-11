@@ -22,7 +22,10 @@ module Api
         post = Post.find(params[:id])
         render json:post.as_json(
           only: [:id, :title, :description, :created_at, :no_of_likes],
-        ).merge(liked_by_user: current_user.present? && post.likes.exists?(user_id: current_user.id)), include: :user
+        ).merge(liked_by_user: current_user.present? && post.likes.exists?(user_id: current_user.id),user: {
+          id: post.user.id,
+          name: post.user.name
+        })
       end
 
       def create
