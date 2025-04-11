@@ -1,0 +1,1 @@
+class TokenNotFound < StandardError; end
