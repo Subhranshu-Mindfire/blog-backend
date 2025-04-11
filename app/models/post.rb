@@ -6,4 +6,8 @@ class Post < ApplicationRecord
 
   validates :title, presence: true
   validates :description, presence: true
+
+  def truncate_post
+    description.truncate_words(100, omission: '... (continued)')
+  end
 end
