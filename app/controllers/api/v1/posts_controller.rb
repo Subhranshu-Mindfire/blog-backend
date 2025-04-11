@@ -29,17 +29,16 @@ module Api
       end
 
       def create
-        if authenticated?
-          post = current_user.posts.build(post_params)
-          if post.save
-            render json: { post: post }, status: :created
-          else
-            render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
-          end
+        return render json: { error: 'Unauthorized' }, status: :unauthorized unless authenticated?
+      
+        post = current_user.posts.build(post_params)
+        if post.save
+          render json: { post: post }, status: :created
         else
-          render json: { error: 'Unauthorized' }, status: :unauthorized
+          render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
         end
       end
+      
 
       private
 
