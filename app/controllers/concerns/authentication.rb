@@ -24,12 +24,14 @@ module Authentication
   def extract_token_from_header
     token = request.headers['Authorization'].to_s.split(' ').last
     raise TokenNotFound, 'Authorization token not provided' if token.blank?
-
-    token
+    return token
+  rescue TokenNotFound
+    return false
   end
 
   def set_current_user
     token = extract_token_from_header
+    return false if token == false
     payload = JsonWebToken.decode(token)
     raise TokenNotFound, 'Invalid or expired token' unless payload
 

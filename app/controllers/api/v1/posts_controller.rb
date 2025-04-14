@@ -3,9 +3,18 @@ module Api
     class PostsController < Api::V1::ApplicationController
       
       def index
-        posts = Post.includes(:user).order(created_at: :desc)
-        render json: posts, current_user: current_user
+        if params[:user_id]
+          posts =  Post.where(user_id: params[:user_id]).includes(:user, comments: :user).order(created_at: :desc)
+        else
+          posts = Post.includes(:user, comments: :user).order(created_at: :desc)
+        end
+        if authenticated?
+          render json: posts, current_user: current_user
+        else
+          render json: posts
+        end
       end
+      
 
       def show
         post = Post.find(params[:id])

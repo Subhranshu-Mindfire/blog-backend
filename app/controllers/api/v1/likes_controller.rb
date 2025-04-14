@@ -1,7 +1,7 @@
 
 module Api
   module V1
-    class LikesController < ApplicationController
+    class LikesController < Api::V1::ApplicationController
       before_action :authenticated?
 
       def create
