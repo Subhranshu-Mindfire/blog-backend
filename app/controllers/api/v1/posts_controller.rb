@@ -46,7 +46,18 @@ module Api
         end
       end
 
+      def destroy
+        @post = Post.find(params[:id])
+        if @post.user == current_user
+          @post.destroy
+          render json: { message: "Post deleted" }
+        else
+          render json: { error: "Unauthorized" }, status: :unauthorized
+        end
+      end
+    
       
+
       private
 
       def post_params
