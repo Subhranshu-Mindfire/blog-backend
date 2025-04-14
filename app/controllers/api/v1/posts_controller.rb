@@ -32,8 +32,21 @@ module Api
           render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
         end
       end
-      
 
+      def update
+        @post = Post.find(params[:id])
+        if @post.user == current_user
+          if @post.update(post_params)
+            render json: @post
+          else
+            render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+          end
+        else
+          render json: { error: "Unauthorized" }, status: :unauthorized
+        end
+      end
+
+      
       private
 
       def post_params
