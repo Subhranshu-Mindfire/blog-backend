@@ -4,7 +4,8 @@ class PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :description, :truncated_description, :created_at, :no_of_likes, :liked_by_user
 
   belongs_to :user
-
+  has_many :comments
+  
   def truncated_description
     object.truncate_post
   end

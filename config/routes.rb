@@ -14,8 +14,13 @@ Rails.application.routes.draw do
       post '/login', to: 'sessions#create'
       delete '/logout', to: 'sessions#destroy'
 
+      resources :users do
+        resources :posts, only: [:index]
+      end
+
       resources :posts do
         resources :likes, only: [:create, :destroy]
+        resources :comments, only: [:create, :destroy]
       end
       
     end
